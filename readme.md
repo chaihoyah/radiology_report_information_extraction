@@ -1,5 +1,5 @@
 # Project Overview
-![Image](https://github.com/user-attachments/assets/8c33eef9-465e-40ee-9736-bb2cbf2b3726)
+![Project Image](images/overview_figure.png)
 
 ## Description
 
