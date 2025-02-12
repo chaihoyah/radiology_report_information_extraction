@@ -4,7 +4,6 @@ import argparse
 import os
 import re
 import warnings
-os.environ["CUDA_VISIBLE_DEVICES"]= "1" 
 
 import numpy as np
 import pandas as pd
@@ -179,10 +178,11 @@ def main():
 
     # 1. Read and preprocess data
     df = pd.read_csv(args.input_csv)
-    df = df.loc[:8, :] ## Sample run for code check
+    # df = df.loc[:8, :] ## Sample run for code check
     df.dropna(subset=[args.text_column], inplace=True)
     df['processed_text'] = df[args.text_column].apply(text_preprocessing)
     df.reset_index(drop=True, inplace=True)
+    print(f"Loaded data: {df.shape[0]} rows.")
 
     # 2. Load tokenizer from JSON
     tokenizer_obj = Tokenizer.from_file(args.tokenizer_path)

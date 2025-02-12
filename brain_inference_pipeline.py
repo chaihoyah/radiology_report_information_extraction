@@ -138,13 +138,6 @@ def main():
 
     # 3) Load your BERT-like model from the checkpoint
     label_size = len(args.label_list)
-    # model = LMModel.load_from_checkpoint(
-    #     checkpoint_path=args.bert_checkpoint,
-    #     strict=False,
-    #     model_name_or_path=args.bert_base_model,
-    #     vocab_size=fast_tokenizer.vocab_size,
-    #     LABEL_SIZE=label_size
-    # )
     model = LMModel.load_from_checkpoint(
         checkpoint_path=args.bert_checkpoint,
         strict=False,
