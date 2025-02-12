@@ -1,5 +1,5 @@
 # Project Overview
-![Figure 5](https://github.com/user-attachments/assets/ebfeabf7-db4e-48b9-ae71-a5edb8931693)
+![Image](https://github.com/user-attachments/assets/8c33eef9-465e-40ee-9736-bb2cbf2b3726)
 
 ## Description
 
@@ -17,7 +17,7 @@ This project extracts lesion and disease information from CDM data of Chest CT a
 
 [Download Link](https://drive.google.com/file/d/1-sIy56c3kwbu78WVGjFKUOGLf3dpOscG/view?usp=sharing)
 
-### Setup Instructions
+## Setup Instructions
 
 1. **Download the models** from the provided link and organize them as follows:
 
