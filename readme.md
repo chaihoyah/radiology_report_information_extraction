@@ -1,6 +1,5 @@
 # Project Overview
-![Image](https://github.com/user-attachments/assets/a62ffc65-6018-43b0-b786-597b3a0763a1)
-
+![Figure 5](https://github.com/user-attachments/assets/ebfeabf7-db4e-48b9-ae71-a5edb8931693)
 
 ## Description
 
@@ -16,7 +15,7 @@ This project extracts lesion and disease information from CDM data of Chest CT a
 
 ## Trained BERT Models
 
-[Download Link](#https://drive.google.com/file/d/1-sIy56c3kwbu78WVGjFKUOGLf3dpOscG/view?usp=sharing)
+[Download Link](https://drive.google.com/file/d/1-sIy56c3kwbu78WVGjFKUOGLf3dpOscG/view?usp=sharing)
 
 ### Setup Instructions
 
