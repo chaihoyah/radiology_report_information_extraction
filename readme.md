@@ -101,7 +101,6 @@ python chest_final_evaluation.py \
 python brain_inference_pipeline.py \
     --input_csv "brain_mri.csv" \
     --finding_column note_text \
-    --conclusion_column note_cnclsn \
     --output_path "./inference_result/brainmri_output.csv" \
     --bert_checkpoint "./trained_models/finetuned_bert/cxrbert_amc_data_pretrain_finetune_brain_mri.ckpt" \
     --tokenizer_path "./trained_models/tokenizer/tokenizer_0530.json" \
