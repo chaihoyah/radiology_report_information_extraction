@@ -419,7 +419,7 @@ Diseases
 """
             output = llm_pipe(prompt, max_new_tokens=300, do_sample=False, num_beams=5)
             df.loc[idx, 'inference_output_noncancer'] = copy.deepcopy(output[0]['generated_text'])
-            df.loc[idx, 'inference_output_noncancer'] = copy.deepcopy(prompt)
+            df.loc[idx, 'input_prompt_noncancer'] = copy.deepcopy(prompt)
             del output
             del prompt
             torch.cuda.empty_cache()

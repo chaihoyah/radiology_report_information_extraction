@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 import numpy as np
 import re
+from ast import literal_eval
 
 # Pre-defined disease dict
 base_disease_dict = ['Glioma', 'Lymphoma', 'Metastasis', 'Non-malignant tumor', 'Non-tumor disease']
@@ -15,7 +16,7 @@ episode_mapping_dict = {
 }
 
 
-def parse_brain_mri(input_path: str, output_path: str) -> None:
+def parse_brain_mri(input_path: str, output_path: str, output_path_structured: str) -> None:
     """
     Brain MRI report를 파싱하는 함수입니다.
     
@@ -145,7 +146,47 @@ def parse_brain_mri(input_path: str, output_path: str) -> None:
 
     # Parsing result to csv
     brain_data.to_csv(output_path, index=False)
-    print("Brain MRI parsing finished. Output saved at:", output_path)
+    print("Output saved at:", output_path)
+
+    disease_list = base_disease_dict[:-1]+disease_dict_noncancer
+    episode_list = ['glioma_episode', 'lymphoma_episode', 'metastasis_episode']
+    new_col_list = ['note_id', 'person_id', 'note_text', 'processed_text'] + disease_list + episode_list
+    new_brain_df = pd.DataFrame(columns=new_col_list)
+    for idx, row in brain_data.iterrows():
+        new_data_to_concat = {c:[] for c in new_col_list}
+        model_disease_list = [d for d in literal_eval(row['final_output_extract_with_template']) if d != 'Non-tumor disease']
+        if not pd.isna(row['final_output_noncancer_extract_with_template']):
+            non_tumor_list = literal_eval(row['final_output_noncancer_extract_with_template'])
+            if non_tumor_list[0]!='':
+                if 'Stroke' in non_tumor_list:
+                    non_tumor_list.remove('Stroke')
+                    non_tumor_list.append('Stroke/infarction')
+                model_disease_list += non_tumor_list
+        new_data_to_concat['note_id'].append(row['note_id'])
+        new_data_to_concat['person_id'].append(row['person_id'])
+        new_data_to_concat['note_text'].append(row['note_text'])
+        new_data_to_concat['processed_text'].append(row['processed_text'])
+        for d in disease_list:
+            if d in model_disease_list:
+                new_data_to_concat[d].append('y')
+            else:
+                new_data_to_concat[d].append('-')
+        epi_dict = literal_eval(row['final_output_episode_extract_with_template'])
+        if len(epi_dict['Glioma'])>0:
+            new_data_to_concat['glioma_episode'].append(str(epi_dict['Glioma']))
+        else:
+            new_data_to_concat['glioma_episode'].append('-')
+        if len(epi_dict['Lymphoma'])>0:
+            new_data_to_concat['lymphoma_episode'].append(str(epi_dict['Lymphoma']))
+        else:
+            new_data_to_concat['lymphoma_episode'].append('-')
+        if len(epi_dict['Metastasis'])>0:
+            new_data_to_concat['metastasis_episode'].append(str(epi_dict['Metastasis']))
+        else:
+            new_data_to_concat['metastasis_episode'].append('-')
+        new_brain_df = pd.concat([new_brain_df, pd.DataFrame(new_data_to_concat)], ignore_index=True)
+    new_brain_df.to_csv(output_path_structured, index=False)
+    print("Brain MRI parsing finished. Structured output saved at:", output_path_structured)
 
 
 def main():
@@ -154,9 +195,11 @@ def main():
                         help="Path to the input CSV file containing Brain MRI results.")
     parser.add_argument("--output_file", type=str, required=True,
                         help="Path to the output CSV file where parsed results will be saved.")
+    parser.add_argument("--output_file_structured", type=str, required=True, 
+                        help="Path to the output structured CSV file.")
     
     args = parser.parse_args()
-    parse_brain_mri(input_path=args.input_file, output_path=args.output_file)
+    parse_brain_mri(input_path=args.input_file, output_path=args.output_file, output_path_structured=args.output_file_structured)
 
 
 if __name__ == "__main__":

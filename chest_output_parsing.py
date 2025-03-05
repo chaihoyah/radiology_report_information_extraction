@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 import re
 from tqdm import tqdm
+from ast import literal_eval
 
 
 # Pre-defined parsing dict
@@ -33,7 +34,7 @@ lesion_dict = {
     'pleural thickening': ['pleural thickening', 'pleural thickenings']
 }
 
-def parse_chest_ct(input_path: str, output_path: str) -> None:
+def parse_chest_ct(input_path: str, output_path: str, output_path_structured: str) -> None:
     """
     Parse chest CT LLM output result and save in csv file.
     
@@ -162,6 +163,36 @@ def parse_chest_ct(input_path: str, output_path: str) -> None:
 
     # Save in csv format
     chest_data.to_csv(output_path, index=False)
+
+    print("===========Making structured format===========")
+    # Make structured data format
+    location_list = list(location_dict.keys())
+    new_chest_df_columns = ['note_id', 'person_id', 'note_text', 'processed_text', 'parsed_lesion'] + location_list
+    new_chest_df = pd.DataFrame(columns=new_chest_df_columns)
+    for idx, row in chest_data.iterrows():
+        new_data_to_concat = {c:[] for c in new_chest_df_columns}
+        extracted_lesions = literal_eval(row['final_output_extract_with_template'])
+        if len(extracted_lesions.keys()) == 0:
+            new_data_to_concat['note_id'].append(row['note_id'])
+            new_data_to_concat['person_id'].append(row['person_id'])
+            new_data_to_concat['note_text'].append(row['note_text'])
+            new_data_to_concat['processed_text'].append(row['processed_text'])
+            new_data_to_concat['parsed_lesion'].append('None')
+            for l in location_list:
+                new_data_to_concat[l].append('-')
+        for k,v in extracted_lesions.items():
+            new_data_to_concat['note_id'].append(row['note_id'])
+            new_data_to_concat['person_id'].append(row['person_id'])
+            new_data_to_concat['note_text'].append(row['note_text'])
+            new_data_to_concat['processed_text'].append(row['processed_text'])
+            new_data_to_concat['parsed_lesion'].append(k)
+            for l in location_list:
+                if l in v:
+                    new_data_to_concat[l].append('y')
+                else:
+                    new_data_to_concat[l].append('-')
+        new_chest_df = pd.concat([new_chest_df, pd.DataFrame(new_data_to_concat)], ignore_index=True)
+    new_chest_df.to_csv(output_path_structured, index=False)
     print("===========Chest CT parsing finished===========")
 
 
@@ -171,10 +202,12 @@ def main():
                         help="Path to the input file (pickle or CSV).")
     parser.add_argument("--output_file", type=str, required=True, 
                         help="Path to the output CSV file.")
+    parser.add_argument("--output_file_structured", type=str, required=True, 
+                        help="Path to the output structured CSV file.")
     
     args = parser.parse_args()
 
-    parse_chest_ct(input_path=args.input_file, output_path=args.output_file)
+    parse_chest_ct(input_path=args.input_file, output_path=args.output_file, output_path_structured=args.output_file_structured)
 
 
 if __name__ == "__main__":
