@@ -1,6 +1,6 @@
 # Project Overview
 
-![Project Image](./images/overview_figure.png)
+![Project Image](./images/overview.png)
 
 ## Description
 
