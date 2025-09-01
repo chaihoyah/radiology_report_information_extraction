@@ -2,6 +2,11 @@
 
 ![Project Image](./images/overview.png)
 
+## Paper
+**Link**: [Two stage large language model approach enhancing entity classification and relationship mapping in radiology reports](https://www.nature.com/articles/s41598-025-16213-z)
+
+**Cite**: Shin, C., Eom, D., Lee, S.M. et al. Two stage large language model approach enhancing entity classification and relationship mapping in radiology reports. Sci Rep 15, 31550 (2025). https://doi.org/10.1038/s41598-025-16213-z
+
 ## Description
 
 This project extracts lesion and disease information from CDM data of Chest CT and Brain MRI reports.
